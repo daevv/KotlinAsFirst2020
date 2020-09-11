@@ -129,7 +129,15 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int {
+    return        when {
+        (kingX == rookX1) && (kingX == rookX2) || (kingY == rookY1) && (kingY == rookY2) -> 3
+        (kingX == rookX1) && (kingY == rookY2) || (kingY == rookY1) && (kingX == rookX2) -> 3
+        (kingX == rookX1) || (kingY == rookY1) -> 1
+        (kingX == rookX2) || (kingY == rookY2) -> 2
+        else -> 0
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -145,7 +153,18 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int  {
+
+    val r1 = kingX - bishopX
+    val r2 = kingY - bishopY
+
+    return when {
+        kotlin.math.abs(r1) == kotlin.math.abs(r2) && (kingX == rookX || kingY == rookY) -> 3
+        (kingX == rookX || kingY == rookY) -> 1
+        kotlin.math.abs(r1) == kotlin.math.abs(r2) -> 2
+        else -> 0
+    }
+}
 
 /**
  * Простая (2 балла)
@@ -155,7 +174,19 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val C = kotlin.math.max(a, b)
+    fun sqr(x: Double): Double = x*x
+    val min = a + b - C
+    val MAX = kotlin.math.max(C, c)
+    val min1 = c + C - MAX
+    return when {
+        MAX > min + min1 -> -1
+        sqr(MAX) == sqr(min) + sqr(min1) -> 1
+        sqr(MAX) > sqr(min) + sqr(min1) -> 2
+        else -> 0
+    }
+}
 
 /**
  * Средняя (3 балла)
@@ -165,4 +196,28 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    if (a == d || b == c) return 0
+    if (a==b && (a==c || a==d)) return 0
+    if (c==d && (b==c || a==d)) return 0
+
+    if (a == c && b == d) return (b - a)
+    if (a < c) return when {
+            b > d -> d - c
+            c < b && d > b -> b - c
+            b == d -> b - c
+            else -> -1
+        }
+    if (a>c) return when {
+            d > b -> b - a
+            d > a && d < b -> d - a
+            b == d -> d - a
+        else -> -1
+        }
+    if (a == c) return when {
+            b > d -> d - a
+            b < d -> b - c
+        else -> -1
+        }
+    return (-1)
+}

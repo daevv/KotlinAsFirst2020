@@ -74,7 +74,8 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = seconds + (minutes + 
  * Определить длину того же отрезка в метрах (в данном случае 18.98).
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (vershoks + arshins * 16 + sagenes * 48) * 4.445 / 100
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
+    (vershoks + arshins * 16 + sagenes * 48) * 4.445 / 100
 
 /**
  * Тривиальная (1 балл)
@@ -82,7 +83,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double = (vershok
  * Пользователь задает угол в градусах, минутах и секундах (например, 36 градусов 14 минут 35 секунд).
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
-fun angleInRadian(deg: Int, min: Int, sec: Int): Double = (sec + min * 60 + deg * 3600) * (kotlin.math.PI / 180) / 3600
+fun angleInRadian(deg: Int, min: Int, sec: Int): Double = (sec + min * 60 + deg * 3600) * (PI / 180) / 3600
 
 /**
  * Тривиальная (1 балл)
@@ -94,8 +95,7 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double {
     val x = x1 - x2
     val y = y1 - y2
     fun sqr(x: Int): Int = x * x
-    return kotlin.math.sqrt((sqr(x) + sqr(y)))
-
+    return sqrt((sqr(x) + sqr(y)))
 }
 
 /**
@@ -142,4 +142,4 @@ fun accountInThreeYears(initial: Int, percent: Int): Double {
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = (number/100 + (number/10) % 10 * 10 + number % 10 * 100)
+fun numberRevert(number: Int): Int = (number / 100 + (number / 10) % 10 * 10 + number % 10 * 100)

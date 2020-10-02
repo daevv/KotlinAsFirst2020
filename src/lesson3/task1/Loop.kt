@@ -117,8 +117,7 @@ fun fib(n: Int1): Int1 {
  */
 fun minDivisor(n: Int1): Int1 {
     for (j in 2..sqrt(n.toDouble()).toInt()) if (n % j == 0) {
-        val min = j
-        return min
+        return j
     }
     return n
 }
@@ -245,7 +244,9 @@ fun isPalindrome(n: Int1): Boolean = TODO()
  */
 fun hasDifferentDigits(n: Int1): Boolean {
     var n1 = n
-    if (n1 < 10) return false else {
+    if (n1 < 10) {
+        return false
+    } else {
         val length = digitLength(n1)
         var z = 0
         val ost = n1 % 10
@@ -300,16 +301,22 @@ fun digitLength(x: Int1): Int1 {
     return n1
 }
 
-fun squareSequenceDigit(n: Int1): Int1 = if (n == 0) 0 else {
-    var count = 0
-    var sq = 0
+fun squareSequenceDigit(n: Int1): kotlin.Int {
+    return if (n == 0) {
+        0
+    } else {
+        var count = 0
+        var sq = 0
+        var j = 0
 
-    for (j in 1..Int1.MAX_VALUE) {
-        sq = sqr(j)
-        count += digitLength(sq)
-        if (count >= n) break
+
+        while (count < n) {
+            j += 1
+            sq = sqr(j)
+            count += digitLength(sq)
+        }
+        (sq / 10.0.pow(count - n).toInt()) % 10
     }
-    (sq / 10.0.pow(count - n).toInt()) % 10
 }
 
 /**
@@ -327,16 +334,13 @@ fun fibSequenceDigit(n: Int1): Int1 {
         var main = 1
         var add: Int1
         var count = 2
+
         while (count < n) {
             add = main
             main += prev
             prev = add
             count += digitLength(main)
         }
-        if (count > n) {
-            count -= n
-            main /= 10.0.pow(count).toInt()
-        }
-        return main % 10
+        return (main / 10.0.pow(count - n).toInt()) % 10
     }
 }

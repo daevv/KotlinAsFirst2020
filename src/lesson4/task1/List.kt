@@ -296,6 +296,8 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 
 /*
+    another solution:
+
     fun convertToString_1(n: Int, base: Int): String {
         val alphabet = listOf(
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',

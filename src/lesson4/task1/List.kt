@@ -172,9 +172,9 @@ fun center(list: MutableList<Double>): MutableList<Double> {
 fun times(a: List<Int>, b: List<Int>): Int {
     return if (a.isEmpty() || b.isEmpty()) 0 else {
         val z = min(a.size, b.size) - 1
-        var C = 0
-        for (j in 0..z) C += a[j] * b[j]
-        C
+        var dig = 0
+        for (j in 0..z) dig += a[j] * b[j]
+        dig
     }
 }
 
@@ -188,25 +188,24 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 
 fun pow(x: Int, y: Int): Int {
-    var X = x
-    var Y = y
-    while (Y != 1) {
-        Y -= 1
-        X *= x
+    var x1 = x
+    var y1 = y
+    while (y1 != 1) {
+        y1 -= 1
+        x1 *= x
     }
-    return X
+    return x1
 }
 
 
 fun polynom(p: List<Int>, x: Int): Int {
     return if (p.isEmpty()) 0 else {
-        var P = p[0]
-        var X = x
+        var p1 = p[0]
+
         for (j in 1 until p.size) {
-            X = x
-            P = P.plus(pow(x, j) * p[j])
+            p1 = p1.plus(pow(x, j) * p[j])
         }
-        P
+        p1
     }
 }
 
@@ -315,9 +314,9 @@ fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
     var string = ""
 
-    for (j in list) if (j < 10) {
-        string += ('0' + j)
-    } else string += ('a' + (j - 10))
+    for (j in list) string += if (j < 10) {
+        ('0' + j)
+    } else ('a' + (j - 10))
 
     return string
 }
@@ -335,7 +334,6 @@ fun decimal(digits: List<Int>, base: Int): Int {
     val base1 = base.toDouble()
     var st = digits.size - 1
     for (j in digits) {
-        var dig = j.toInt()
         num += j * base1.pow(st)
         st -= 1
     }
@@ -354,12 +352,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int {
-    var num = 0
-    for (j in str.indices) {
-        num += str[j].
-    }
-}
+fun decimalFromString(str: String, base: Int): Int = TODO()
 
 /**
  * Сложная (5 баллов)

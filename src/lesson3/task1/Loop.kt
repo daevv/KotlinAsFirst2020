@@ -3,8 +3,11 @@
 package lesson3.task1
 
 
-import kotlin.math.*
 import lesson1.task1.sqr
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlin.Int as Int1
 
 
@@ -82,7 +85,7 @@ fun digitNumber(n: Int1): Int1 {
     do {
         num /= 10
         count += 1
-    } while (num > 0)
+    } while (num != 0)
     return count
 }
 
@@ -196,13 +199,15 @@ fun isCoPrime(m: Int1, n: Int1): Boolean = easyNums(m, n) == 1
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
+
+
 fun squareBetweenExists(m: Int1, n: Int1): Boolean {
-    var j = 0
-    while (sqr(j) < n && sqr(j) != m) {
-        j += 1
+    val m1 = m.toDouble()
+    val n1 = n.toDouble()
+    for (j in sqrt(m1).toInt()..sqrt(n1).toInt()) {
+        if (ceil(sqrt(m1)) <= j && floor(sqrt(n1)) >= j && sqr(j) >= m) return true
     }
-    if (sqr(j) > n) j -= 1
-    return j > 0 && sqr(j) >= m && sqr(j) <= n
+    return false
 }
 
 /**
@@ -213,13 +218,15 @@ fun squareBetweenExists(m: Int1, n: Int1): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun revert(n: Int1): Int1 {
-    var num = 0.0
+    var num = 0
     var n1 = n
+    var st= 10.0.pow(digitLength(n) - 1).toInt()
     for (j in digitLength(n) - 1 downTo 0) {
-        num += (n1 % 10) * 10.0.pow(j)
+        num += (n1 % 10) * st
         n1 /= 10
+        st /= 10
     }
-    return num.toInt()
+    return num
 }
 
 /**
@@ -231,7 +238,7 @@ fun revert(n: Int1): Int1 {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int1): Boolean = TODO()
+fun isPalindrome(n: Int1): Boolean = revert(n) == n
 
 
 /**
@@ -329,7 +336,7 @@ fun squareSequenceDigit(n: Int1): kotlin.Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int1): Int1 {
-    if (n < 3) return 1 else {
+    return if (n < 3) 1 else {
         var prev = 1
         var main = 1
         var add: Int1
@@ -341,6 +348,6 @@ fun fibSequenceDigit(n: Int1): Int1 {
             prev = add
             count += digitLength(main)
         }
-        return (main / 10.0.pow(count - n).toInt()) % 10
+        (main / 10.0.pow(count - n).toInt()) % 10
     }
 }

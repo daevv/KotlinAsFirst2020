@@ -264,7 +264,7 @@ fun factorizeToString(n: Int): String {
 fun convert(n: Int, base: Int): List<Int> {
     var n1 = n
     val list = mutableListOf<Int>()
-    while (n1 > base) {
+    while (n1 >= base) {
         list.add(n1 % base)
         n1 /= base
     }
@@ -353,7 +353,58 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+
+// Вспомогательная программа, которая раскладывает число на единицы(mas[0]) и пятёрки(mas[1])
+fun mas(n: Int): List<Int> {
+    val mas = mutableListOf<Int>(n % 5, n / 5)
+    return mas
+}
+
+//Ещё одна вспомогательная программа, которая пишет один разряд числа: сотни, десятки или единицы
+fun app(mas: List<Int>, res: StringBuilder, nine: String, five: String, four: String, one: String) {
+    if (mas[1] == 1) {
+        if (mas[0] == 4) res.append(nine) else {
+            res.append(five)
+            for (j in 0 until mas[0]) res.append(one)
+        }
+    } else if (mas[0] == 4) res.append(four) else for (j in 0 until mas[0]) res.append(one)
+}
+
+fun roman(n: Int): String {
+    val res = StringBuilder()
+    val un = mas(n % 10)
+
+    if (n > 999) {
+        val th = n / 1000
+        val hun = mas((n % 1000) / 100)
+        val doz = mas((n % 100) / 10)
+
+        for (j in 0 until th) res.append("M")
+        app(hun, res, "CM", "D", "CD", "C")
+        app(doz, res, "XC", "L", "XL", "X")
+        app(un, res, "IX", "V", "IV", "I")
+
+        return res.toString()
+
+    } else if (n > 99) {
+        val hun = mas((n % 1000) / 100)
+        val doz = mas((n % 100) / 10)
+
+        app(hun, res, "CM", "D", "CD", "C")
+        app(doz, res, "XC", "L", "XL", "X")
+        app(un, res, "IX", "V", "IV", "I")
+
+        return res.toString()
+
+    } else {
+        val doz = mas((n % 100) / 10)
+
+        app(doz, res, "XC", "L", "XL", "X")
+        app(un, res, "IX", "V", "IV", "I")
+
+        return res.toString()
+    }
+}
 
 /**
  * Очень сложная (7 баллов)

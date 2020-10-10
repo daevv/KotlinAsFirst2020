@@ -218,13 +218,11 @@ fun squareBetweenExists(m: Int1, n: Int1): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun revert(n: Int1): Int1 {
-    var num = 0
-    var n1 = n
-    var st= 10.0.pow(digitLength(n) - 1).toInt()
-    for (j in digitLength(n) - 1 downTo 0) {
-        num += (n1 % 10) * st
+    var num = n % 10
+    var n1 = n / 10
+    while (n1 != 0) {
+        num = num * 10 + (n1 % 10)
         n1 /= 10
-        st /= 10
     }
     return num
 }

@@ -10,6 +10,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import lesson3.task1.minDivisor
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -126,11 +127,11 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double {
-    return if (v.isEmpty()) 0.0 else {
-        val list = v.toMutableList()
-        for (j in list.indices1) list[j] = sqr(list[j])
-        sqrt(list.sum())
+    var sum = 0.0
+    for (j in v.indices1) {
+        sum += sqr(v[j])
     }
+    return sqrt(sum)
 }
 
 
@@ -141,8 +142,7 @@ fun abs(v: List<Double>): Double {
  */
 fun mean(list: List<Double>): Double {
     return if (list.isEmpty()) 0.0 else {
-        val newList = list.toMutableList()
-        newList.sum() / newList.size.toDouble()
+        list.sum() / list.size.toDouble()
     }
 }
 
@@ -155,11 +155,9 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    return if (list.isEmpty()) list else {
-        val arif = mean(list)
-        for (j in list.indices1) list[j] -= arif
-        list
-    }
+    val arif = mean(list)
+    for (j in list.indices1) list[j] -= arif
+    return list
 }
 
 /**
@@ -170,12 +168,10 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    return if (a.isEmpty() || b.isEmpty()) 0 else {
-        val z = min(a.size, b.size) - 1
-        var dig = 0
-        for (j in 0..z) dig += a[j] * b[j]
-        dig
-    }
+    val z = min(a.size, b.size) - 1
+    var dig = 0
+    for (j in 0..z) dig += a[j] * b[j]
+    return dig
 }
 
 /**
@@ -201,9 +197,10 @@ fun pow(x: Int, y: Int): Int {
 fun polynom(p: List<Int>, x: Int): Int {
     return if (p.isEmpty()) 0 else {
         var p1 = p[0]
-
+        var x1 = x
         for (j in 1 until p.size) {
-            p1 = p1.plus(pow(x, j) * p[j])
+            p1 += x1 * p[j]
+            x1 *= x
         }
         p1
     }
@@ -220,12 +217,10 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    return if (list.size < 2) list else {
-        for (j in 1 until list.size) {
-            list[j] += list[j - 1]
-        }
-        list
+    for (j in 1 until list.size) {
+        list[j] += list[j - 1]
     }
+    return list
 }
 
 /**
@@ -235,12 +230,6 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun minDivisor(n: Int): Int {
-    for (j in 2..sqrt(n.toDouble()).toInt()) if (n % j == 0) {
-        return j
-    }
-    return n
-}
 
 fun factorize(n: Int): List<Int> {
     val list = mutableListOf<Int>()
@@ -318,8 +307,9 @@ fun convertToString(n: Int, base: Int): String {
 
     for (j in list) string += if (j < 10) {
         ('0' + j)
-    } else ('a' + (j - 10))
-
+    } else {
+        ('a' + (j - 10))
+    }
     return string
 }
 
@@ -334,10 +324,9 @@ fun convertToString(n: Int, base: Int): String {
 fun decimal(digits: List<Int>, base: Int): Int {
     var num = 0.0
     val base1 = base.toDouble()
-    var st = digits.size - 1
-    for (j in digits) {
-        num += j * base1.pow(st)
-        st -= 1
+    val st: Int = digits.size - 1
+    for ((ind, j) in digits.withIndex()) {
+        num += j * base1.pow(st - ind)
     }
     return num.toInt()
 }

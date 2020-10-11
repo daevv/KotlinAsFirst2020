@@ -360,7 +360,7 @@ fun mas(n: Int): List<Int> {
     return mas
 }
 
-//Ещё одна вспомогательная программа, которая пишет один разряд числа: сотни, десятки или единицы
+/* Ещё одна вспомогательная программа, которая пишет один разряд числа: сотни, десятки или единицы */
 fun app(mas: List<Int>, res: StringBuilder, nine: String, five: String, four: String, one: String) {
     if (mas[1] == 1) {
         if (mas[0] == 4) res.append(nine) else {
@@ -374,43 +374,45 @@ fun roman(n: Int): String {
     val res = StringBuilder()
     val un = mas(n % 10)
 
-    if (n > 999) {
-        val th = n / 1000
-        val hun = mas((n % 1000) / 100)
-        val doz = mas((n % 100) / 10)
+    when {
+        n > 999 -> {
+            val th = n / 1000
+            val hun = mas((n % 1000) / 100)
+            val doz = mas((n % 100) / 10)
 
-        for (j in 0 until th) res.append("M")
-        app(hun, res, "CM", "D", "CD", "C")
-        app(doz, res, "XC", "L", "XL", "X")
-        app(un, res, "IX", "V", "IV", "I")
+            for (j in 0 until th) res.append("M")
+            app(hun, res, "CM", "D", "CD", "C")
+            app(doz, res, "XC", "L", "XL", "X")
+            app(un, res, "IX", "V", "IV", "I")
 
-        return res.toString()
+            return res.toString()
+        }
+        n > 99 -> {
+            val hun = mas((n % 1000) / 100)
+            val doz = mas((n % 100) / 10)
 
-    } else if (n > 99) {
-        val hun = mas((n % 1000) / 100)
-        val doz = mas((n % 100) / 10)
+            app(hun, res, "CM", "D", "CD", "C")
+            app(doz, res, "XC", "L", "XL", "X")
+            app(un, res, "IX", "V", "IV", "I")
 
-        app(hun, res, "CM", "D", "CD", "C")
-        app(doz, res, "XC", "L", "XL", "X")
-        app(un, res, "IX", "V", "IV", "I")
+            return res.toString()
+        }
+        else -> {
+            val doz = mas((n % 100) / 10)
 
-        return res.toString()
+            app(doz, res, "XC", "L", "XL", "X")
+            app(un, res, "IX", "V", "IV", "I")
 
-    } else {
-        val doz = mas((n % 100) / 10)
-
-        app(doz, res, "XC", "L", "XL", "X")
-        app(un, res, "IX", "V", "IV", "I")
-
-        return res.toString()
+            return res.toString()
+        }
     }
 }
 
-/**
- * Очень сложная (7 баллов)
- *
- * Записать заданное натуральное число 1..999999 прописью по-русски.
- * Например, 375 = "триста семьдесят пять",
- * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
- */
-fun russian(n: Int): String = TODO()
+    /**
+     * Очень сложная (7 баллов)
+     *
+     * Записать заданное натуральное число 1..999999 прописью по-русски.
+     * Например, 375 = "триста семьдесят пять",
+     * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
+     */
+    fun russian(n: Int): String = TODO()

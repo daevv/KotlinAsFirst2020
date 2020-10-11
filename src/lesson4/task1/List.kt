@@ -355,55 +355,34 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  */
 
 /* Вспомогательная программа, которая пишет один разряд числа: сотни, десятки или единицы */
-fun app(n: Int, res: StringBuilder, nine: String, five: String, four: String, one: String) {
-    val mas = mutableListOf<Int>(0, 0)
-    when {
-        one == "I" -> {
-            val j = n % 10
-            mas[0] = j % 5
-            mas[1] = j / 5
-        }
-        one == "X" -> {
-            val j = (n % 100) / 10
-            mas[0] = j % 5
-            mas[1] = j / 5
-        }
-        else -> {
-            val j = (n % 1000) / 100
-            mas[0] = j % 5
-            mas[1] = j / 5
-        }
-    }
+fun app(j: Int, res: StringBuilder, nine: String, five: String, four: String, one: String) {
+    val mas = mutableListOf(j % 5, j / 5)
+
     if (mas[1] == 1) {
-        if (mas[0] == 4) res.append(nine) else {
+        if (mas[0] == 4) {
+            res.append(nine)
+        } else {
             res.append(five)
-            for (j in 0 until mas[0]) res.append(one)
+            repeat(mas[0]) {
+                res.append(one)
+            }
         }
-    } else if (mas[0] == 4) res.append(four) else for (j in 0 until mas[0]) res.append(one)
+    } else if (mas[0] == 4) {
+        res.append(four)
+    } else repeat(mas[0]) {
+        res.append(one)
+    }
 }
 
 fun roman(n: Int): String {
     val res = StringBuilder()
-    when {
-        n > 999 -> {
-            for (j in 0 until n / 1000) res.append("M")
-            app(n, res, "CM", "D", "CD", "C")
-            app(n, res, "XC", "L", "XL", "X")
-            app(n, res, "IX", "V", "IV", "I")
-            return res.toString()
-        }
-        n > 99 -> {
-            app(n, res, "CM", "D", "CD", "C")
-            app(n, res, "XC", "L", "XL", "X")
-            app(n, res, "IX", "V", "IV", "I")
-            return res.toString()
-        }
-        else -> {
-            app(n, res, "XC", "L", "XL", "X")
-            app(n, res, "IX", "V", "IV", "I")
-            return res.toString()
-        }
+    if (n > 999) repeat(n / 1000) {
+        res.append("M")
     }
+    if (n > 99) app((n % 1000) / 100, res, "CM", "D", "CD", "C")
+    if (n > 9) app((n % 100) / 10, res, "XC", "L", "XL", "X")
+    app(n % 10, res, "IX", "V", "IV", "I")
+    return res.toString()
 }
 
 /**

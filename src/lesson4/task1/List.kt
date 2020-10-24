@@ -363,14 +363,12 @@ fun app(j: Int, res: StringBuilder, nine: String, five: String, four: String, on
             res.append(nine)
         } else {
             res.append(five)
-            repeat(mas[0]) {
-                res.append(one)
-            }
+            res.append(one.repeat(mas[0]))
         }
     } else if (mas[0] == 4) {
         res.append(four)
-    } else repeat(mas[0]) {
-        res.append(one)
+    } else{
+        res.append(one.repeat(mas[0]))
     }
 }
 

@@ -12,7 +12,6 @@ import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import lesson3.task1.minDivisor
 import kotlin.math.min
-import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.collections.indices as indices1
 
@@ -195,16 +194,15 @@ fun pow(x: Int, y: Int): Int {
 
 
 fun polynom(p: List<Int>, x: Int): Int {
-    return if (p.isEmpty()) 0 else {
-        var p1 = p[0]
-        var x1 = x
-        for (j in 1 until p.size) {
-            p1 += x1 * p[j]
-            x1 *= x
-        }
-        p1
+    var p1 = 0
+    var x1 = 1
+    for (element in p) {
+        p1 += x1 * element
+        x1 *= x
     }
+    return p1
 }
+
 
 /**
  * Средняя (3 балла)
@@ -322,13 +320,9 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    var num = 0.0
-    val base1 = base.toDouble()
-    val st: Int = digits.size - 1
-    for ((ind, j) in digits.withIndex()) {
-        num += j * base1.pow(st - ind)
-    }
-    return num.toInt()
+    var num = 0
+    for (j in digits) num = num * base + j
+    return num
 }
 
 /**
@@ -367,7 +361,7 @@ fun app(j: Int, res: StringBuilder, nine: String, five: String, four: String, on
         }
     } else if (mas[0] == 4) {
         res.append(four)
-    } else{
+    } else {
         res.append(one.repeat(mas[0]))
     }
 }

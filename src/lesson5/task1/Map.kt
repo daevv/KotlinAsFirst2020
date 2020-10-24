@@ -265,6 +265,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     val word1 = word.toLowerCase().toSet()
+    val charsSmall = mutableListOf<Char>()
+    for (el in chars) charsSmall.add((el.toLowerCase()))
     for (element in word1) if (element !in chars) return false
     return true
 }
@@ -346,6 +348,8 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+
+
 
 /**
  * Сложная (6 баллов)

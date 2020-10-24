@@ -185,7 +185,6 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     val mapBm = mapB.toMutableMap()
     for ((key, value) in mapA) {
         val set = mutableSetOf<String>()
-        res += (key to String())
         set.add(value)
         if (mapBm[key] != null) {
             set.add(mapBm[key]!!)
@@ -212,13 +211,13 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
     val mas = mutableMapOf<String, MutableList<Double>>()
     for ((key, value) in stockPrices) {
         if (mas[key] == null) {
-            mas += (key to mutableListOf(value))
+            mas[key] = mutableListOf(value)
         } else {
             (mas[key]!!).add(value)
         }
     }
     val res = mutableMapOf<String, Double>()
-    for (key in mas.keys) res += (key to (mas[key]!!).sum() / mas[key]!!.size)
+    for ((key, value) in mas) res += (key to value.sum() / value.size)
     return res
 }
 
@@ -264,11 +263,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val word1 = word.toLowerCase().toSet()
-    val charsSmall = mutableListOf<Char>()
-    for (el in chars) charsSmall.add((el.toLowerCase()))
-    for (element in word1) if (element !in chars) return false
-    return true
+    val word1 = word.toLowerCase().toSet().toMutableSet()
+    val charsSmall = chars.joinToString(separator = "").toLowerCase().toSet().toMutableSet()
+    return word1 == charsSmall
 }
 
 /**
@@ -284,17 +281,18 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
-    val res = mutableMapOf<String, MutableList<String>>()
+    val res = mutableMapOf<String, Int>()
     for (element in list) {
-        if (res[element] == null) {
-            res += (element to mutableListOf(element))
+        val a = res[element]
+        if (a == null) {
+            res[element] = 1
         } else {
-            res[element]!!.add(element)
+            res[element] = a + 1
         }
     }
     val res1 = mutableMapOf<String, Int>()
     for ((key, value) in res) {
-        if (value.size != 1) res1 += (key to value.size)
+        if (value != 1) res1 += (key to value)
     }
     return res1
 }
@@ -348,7 +346,6 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
-
 
 
 /**

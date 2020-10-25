@@ -357,7 +357,7 @@ fun smartProgrammer(
         if (el != key) (res[key] ?: mutableSetOf()).add(el)
         when {
             friends[el] == null -> res[el] = mutableSetOf()
-            el == key -> break
+            el == key -> continue
             res[el] != null -> res[key]!! += res[el]!!
             else -> smartProgrammer(friends, res, key, friends[el]!!.toMutableSet())
         }

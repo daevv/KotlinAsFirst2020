@@ -346,7 +346,34 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *          "GoodGnome" to setOf()
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+
+fun smartProgrammer(
+    friends: Map<String, Set<String>>,
+    res: MutableMap<String, MutableSet<String>>,
+    key: String,
+    value: MutableSet<String>
+) {
+    for (el in value) {
+        if (el != key) (res[key] ?: mutableSetOf()).add(el)
+        when {
+            friends[el] == null -> res[el] = mutableSetOf()
+            el == key -> break
+            else -> smartProgrammer(friends, res, key, friends[el]!!.toMutableSet())
+        }
+
+    }
+
+}
+
+
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val res = mutableMapOf<String, MutableSet<String>>()
+    for ((key, value) in friends) {
+        res[key] = value.toMutableSet()
+        smartProgrammer(friends, res, key, value.toMutableSet())
+    }
+    return res
+}
 
 
 /**

@@ -358,6 +358,7 @@ fun smartProgrammer(
         when {
             friends[el] == null -> res[el] = mutableSetOf()
             el == key -> break
+            res[el] != null -> res[key]!! += res[el]!!
             else -> smartProgrammer(friends, res, key, friends[el]!!.toMutableSet())
         }
 
@@ -371,6 +372,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     for ((key, value) in friends) {
         res[key] = value.toMutableSet()
         smartProgrammer(friends, res, key, value.toMutableSet())
+        res[key]!!.remove(key)
     }
     return res
 }

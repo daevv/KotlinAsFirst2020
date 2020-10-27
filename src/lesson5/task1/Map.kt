@@ -238,18 +238,17 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    val costs = mutableListOf<Double>()
-    val names = mutableListOf<String>()
+    val res = mutableMapOf<Double, String>()
     for (key in stuff.keys) {
-        if ((stuff[key] ?: error("")).first == kind) {
-            costs.add((stuff[key] ?: error("")).second)
-            names.add(key)
+        val a = stuff[key]
+        if (a!!.first == kind) {
+            res[a.second] = key
         }
     }
-    return if (costs.size == 0) {
+    return if (res.isEmpty()) {
         null
     } else {
-        names[costs.indexOf(costs.minOrNull())]
+        res[res.keys.minOrNull()]
     }
 }
 

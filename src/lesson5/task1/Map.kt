@@ -244,7 +244,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
             res[pair.second] = key
         }
     }
-    return res.values.minByOrNull { it }
+    return res[res.keys.minByOrNull {it}]
 }
 
 /**

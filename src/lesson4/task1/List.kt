@@ -10,7 +10,6 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
-import lesson3.task1.minDivisor
 import kotlin.math.min
 import kotlin.math.sqrt
 import kotlin.collections.indices as indices1
@@ -230,20 +229,18 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  */
 
 fun factorize(n: Int): List<Int> {
+    var k = 2
     val list = mutableListOf<Int>()
     var n1 = n
-    var k = 1
     while (n1 != 1) {
-        if (n1 % k == 0 && k != 1) {
-            list.add(k)
-            n1 /= k
-        } else {
-            val j = minDivisor(n1)
-            list.add(j)
-            n1 /= j
-            k = j
+        for (del in k..n) {
+            if (n1 % del == 0) {
+                list.add(del)
+                n1 /= del
+                k = del
+                break
+            }
         }
-
     }
     return list
 }

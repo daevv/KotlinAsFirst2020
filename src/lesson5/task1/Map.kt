@@ -244,8 +244,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
             res[pair.second] = key
         }
     }
-    return res[res.keys.minByOrNull {it}]
+    return res.minByOrNull { it.key }?.value
 }
+
 
 /**
  * Средняя (3 балла)
@@ -341,35 +342,9 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *        )
  */
 
-fun smartProgrammer(
-    friends: Map<String, Set<String>>,
-    res: MutableMap<String, MutableSet<String>>,
-    key: String,
-    value: MutableSet<String>
-) {
-    for (el in value) {
-        if (el != key) (res[key] ?: mutableSetOf()).add(el)
-        when {
-            friends[el] == null -> res[el] = mutableSetOf()
-            el == key -> continue
-            res[el] != null -> res[key]!! += res[el]!!
-            else -> smartProgrammer(friends, res, key, friends[el]!!.toMutableSet())
-        }
-
-    }
-
-}
 
 
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val res = mutableMapOf<String, MutableSet<String>>()
-    for ((key, value) in friends) {
-        res[key] = value.toMutableSet()
-        smartProgrammer(friends, res, key, value.toMutableSet())
-        res[key]!!.remove(key)
-    }
-    return res
-}
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
 
 /**

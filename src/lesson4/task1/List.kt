@@ -389,4 +389,74 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun helper(res: StringBuilder, n: Int, one: String, two: String) {
+    val nums = listOf(
+        "сто",
+        "один",
+        "два",
+        "три",
+        "четыре",
+        "пять",
+        "шесть",
+        "семь",
+        "восемь",
+        "девять",
+        "десять",
+    )
+    val max = n / 100
+    val med = (n / 10) % 10
+    val min = n % 10
+
+    if (max > 0) {
+        when {
+            max == 1 -> res.append(nums[0])
+            max == 2 -> res.append("двести")
+            max > 4 -> res.append(nums[max] + "сот")
+            else -> res.append(nums[max] + "ста")
+        }
+        res.append(" ")
+    }
+
+    if (med > 0) {
+        when (med) {
+            9 -> res.append("девяносто")
+            4 -> res.append("сорок")
+            3, 2 -> res.append(nums[med] + "дцать")
+            1 -> when {
+                min == 0 -> res.append("десять")
+                min == 2 -> res.append("двенадцать")
+                min > 3 -> res.append(nums[min].replace("ь", "") + "надцать")
+                else -> res.append(nums[min] + "надцать")
+            }
+            else -> res.append(nums[med] + "десят")
+        }
+        res.append(" ")
+    }
+
+    if (min != 0 && med != 1) {
+        when (min) {
+            1 -> res.append(one)
+            2 -> res.append(two)
+            else -> res.append(nums[min])
+        }
+        res.append(" ")
+    }
+}
+
+fun russian(n: Int): String {
+    val res = StringBuilder()
+    val n1 = n / 1000
+    val n2 = n % 1000
+    if (n > 999) {
+        helper(res, n1, "одна", "две")
+        res.deleteAt(res.lastIndex)
+        when (n1 % 10) {
+            1 -> res.append(" тысяча")
+            in 2..4 -> res.append(" тысячи")
+            else -> res.append(" тысяч")
+        }
+        res.append(" ")
+    }
+    helper(res, n2, "один", "два")
+    return res.toString().trim()
+}

@@ -425,7 +425,7 @@ fun helper(res: StringBuilder, n: Int, one: String, two: String) {
             1 -> when {
                 min == 0 -> res.append("десять")
                 min == 2 -> res.append("двенадцать")
-                min > 3 -> res.append(nums[min].replace("ь", "") + "надцать")
+                min > 3 -> res.append(nums[min].dropLast(1) + "надцать")
                 else -> res.append(nums[min] + "надцать")
             }
             else -> res.append(nums[med] + "десят")
@@ -450,9 +450,12 @@ fun russian(n: Int): String {
     if (n > 999) {
         helper(res, n1, "одна", "две")
         res.deleteAt(res.lastIndex)
-        when (n1 % 10) {
-            1 -> res.append(" тысяча")
-            in 2..4 -> res.append(" тысячи")
+        when {
+
+            n1 % 100 in 11..19 -> res.append(" тысяч")
+            n1 % 10 == 1 -> res.append(" тысяча")
+            n1 % 10 in 2..4 -> res.append(" тысячи")
+
             else -> res.append(" тысяч")
         }
         res.append(" ")

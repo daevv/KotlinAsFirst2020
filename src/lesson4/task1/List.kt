@@ -12,7 +12,6 @@ import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import kotlin.math.min
 import kotlin.math.sqrt
-import kotlin.collections.indices as indices1
 
 /**
  * Пример
@@ -126,7 +125,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  */
 fun abs(v: List<Double>): Double {
     var sum = 0.0
-    for (j in v.indices1) {
+    for (j in v.indices) {
         sum += sqr(v[j])
     }
     return sqrt(sum)
@@ -138,11 +137,8 @@ fun abs(v: List<Double>): Double {
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-    return if (list.isEmpty()) 0.0 else {
-        list.sum() / list.size.toDouble()
-    }
-}
+fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() / list.size.toDouble()
+
 
 /**
  * Средняя (3 балла)
@@ -154,7 +150,7 @@ fun mean(list: List<Double>): Double {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val arif = mean(list)
-    for (j in list.indices1) list[j] -= arif
+    for (j in list.indices) list[j] -= arif
     return list
 }
 
@@ -166,7 +162,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    val z = min(a.size, b.size) - 1
+    val z = min(a.lastIndex, b.lastIndex)
     var dig = 0
     for (j in 0..z) dig += a[j] * b[j]
     return dig
@@ -180,16 +176,6 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-
-fun pow(x: Int, y: Int): Int {
-    var x1 = x
-    var y1 = y
-    while (y1 != 1) {
-        y1 -= 1
-        x1 *= x
-    }
-    return x1
-}
 
 
 fun polynom(p: List<Int>, x: Int): Int {
@@ -306,14 +292,14 @@ fun convert(n: Int, base: Int): List<Int> {
 
 fun convertToString(n: Int, base: Int): String {
     val list = convert(n, base)
-    var string = ""
+    val res = StringBuilder()
 
-    for (j in list) string += if (j < 10) {
-        ('0' + j)
+    for (j in list) if (j < 10) {
+        res.append('0' + j)
     } else {
-        ('a' + (j - 10))
+        res.append('a' + j - 10)
     }
-    return string
+    return res.toString()
 }
 
 
@@ -353,7 +339,7 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
 
-/* Вспомогательная программа, которая пишет один разряд числа: сотни, десятки или единицы */
+/* Вспомогательная функция, которая пишет один разряд числа: сотни, десятки или единицы */
 fun app(j: Int, res: StringBuilder, nine: String, five: String, four: String, one: String) {
     val mas = mutableListOf(j % 5, j / 5)
 
@@ -422,11 +408,13 @@ fun helper(res: StringBuilder, n: Int, one: String, two: String) {
             9 -> res.append("девяносто")
             4 -> res.append("сорок")
             3, 2 -> res.append(nums[med] + "дцать")
-            1 -> when {
-                min == 0 -> res.append("десять")
-                min == 2 -> res.append("двенадцать")
-                min > 3 -> res.append(nums[min].dropLast(1) + "надцать")
-                else -> res.append(nums[min] + "надцать")
+            1 -> when (min) {
+                0 -> res.append("десять")
+                2 -> res.append("двенадцать")
+                else -> when (min) {
+                    1, 3 -> res.append(nums[min] + "надцать")
+                    else -> res.append(nums[min].dropLast(1) + "надцать")
+                }
             }
             else -> res.append(nums[med] + "десят")
         }

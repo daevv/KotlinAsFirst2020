@@ -342,7 +342,7 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
 /* Вспомогательная функция, которая пишет один разряд числа: сотни, десятки или единицы */
 fun app(j: Int, res: StringBuilder, nine: String, five: String, four: String, one: String) {
     val amountOfUnits = j % 5
-    val hasFive = j / 5 == 1
+    val hasFive = j >= 5
 
     if (hasFive) {
         if (amountOfUnits == 4) {

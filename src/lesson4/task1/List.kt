@@ -341,19 +341,20 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
 
 /* Вспомогательная функция, которая пишет один разряд числа: сотни, десятки или единицы */
 fun app(j: Int, res: StringBuilder, nine: String, five: String, four: String, one: String) {
-    val mas = mutableListOf(j % 5, j / 5)
+    val amountOfUnits = j % 5
+    val hasFive = j / 5 == 1
 
-    if (mas[1] == 1) {
-        if (mas[0] == 4) {
+    if (hasFive) {
+        if (amountOfUnits == 4) {
             res.append(nine)
         } else {
             res.append(five)
-            res.append(one.repeat(mas[0]))
+            res.append(one.repeat(amountOfUnits))
         }
-    } else if (mas[0] == 4) {
+    } else if (amountOfUnits == 4) {
         res.append(four)
     } else {
-        res.append(one.repeat(mas[0]))
+        res.append(one.repeat(amountOfUnits))
     }
 }
 
@@ -362,8 +363,8 @@ fun roman(n: Int): String {
     if (n > 999) repeat(n / 1000) {
         res.append("M")
     }
-    if (n > 99) app((n % 1000) / 100, res, "CM", "D", "CD", "C")
-    if (n > 9) app((n % 100) / 10, res, "XC", "L", "XL", "X")
+    app((n % 1000) / 100, res, "CM", "D", "CD", "C")
+    app((n % 100) / 10, res, "XC", "L", "XL", "X")
     app(n % 10, res, "IX", "V", "IV", "I")
     return res.toString()
 }
@@ -411,10 +412,8 @@ fun helper(res: StringBuilder, n: Int, one: String, two: String) {
             1 -> when (min) {
                 0 -> res.append("десять")
                 2 -> res.append("двенадцать")
-                else -> when (min) {
-                    1, 3 -> res.append(nums[min] + "надцать")
-                    else -> res.append(nums[min].dropLast(1) + "надцать")
-                }
+                1, 3 -> res.append(nums[min] + "надцать")
+                else -> res.append(nums[min].dropLast(1) + "надцать")
             }
             else -> res.append(nums[med] + "десят")
         }

@@ -343,7 +343,6 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  */
 
 
-
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
 
@@ -397,4 +396,47 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val n = treasures.size // количество сокровищ
+
+    val list = mutableListOf<Pair<Int, Int>>() //список пар вес-цена
+    for (pair in treasures.values) {
+        list.add(pair)
+    }
+
+    val treasuresNames = mutableListOf<String>() // список имён сокровищ
+    for (key in treasures.keys) treasuresNames.add(key)
+
+    val mas = mutableListOf<MutableList<Int>>() // таблица
+    repeat(n + 1) {   //добавляем строки
+        mas.add(mutableListOf())
+    }
+
+    for (h in 0..n) repeat(capacity + 1) { //добавляем столбцы
+        mas[h].add(0)
+    }
+
+    for (j in 1..n) {
+        for (ind in 1..capacity) {
+
+            val value = list[j - 1].second
+            val weight = list[j - 1].first
+
+            if (weight <= ind) {
+                mas[j][ind] =
+                    maxOf(mas[j - 1][ind], mas[j - 1][ind - weight] + value)
+            } else mas[j][ind] = mas[j - 1][ind]
+        }
+    }
+
+    val res = mutableSetOf<String>()
+    var ind = capacity
+    for (j in n downTo 1) {
+        if (mas[j][ind] == 0) break
+        if (mas[j][ind] != mas[j - 1][ind]) {
+            res.add(treasuresNames[j - 1])
+            ind -= list[j - 1].first
+        }
+    }
+    return res
+}

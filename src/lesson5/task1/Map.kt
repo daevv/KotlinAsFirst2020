@@ -99,12 +99,9 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val res = mutableMapOf<Int, MutableList<String>>()
     for ((key, value) in grades) {
-        if (value !in res.keys) {
-            res += (value to mutableListOf())
-        }
-        res[value]!! += key
+        res.getOrPut(value) { mutableListOf() }.add(key)
     }
-    return res.toMap()
+    return res
 }
 
 
@@ -184,10 +181,10 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     val res = mutableMapOf<String, String>()
     val mapBm = mapB.toMutableMap()
     for ((key, value) in mapA) {
-        val set = mutableSetOf<String>()
-        set.add(value)
-        if (mapBm[key] != null) {
-            set.add(mapBm[key]!!)
+        val set = mutableSetOf(value)
+        val a = mapBm[key]
+        if (a != null) {
+            set.add(a)
             mapBm -= key
         }
         res[key] = set.joinToString(separator = ", ")
@@ -210,14 +207,10 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val mas = mutableMapOf<String, MutableList<Double>>()
     for ((key, value) in stockPrices) {
-        if (mas[key] == null) {
-            mas[key] = mutableListOf(value)
-        } else {
-            (mas[key]!!).add(value)
-        }
+        mas.getOrPut(key) { mutableListOf() }.add(value)
     }
     val res = mutableMapOf<String, Double>()
-    for ((key, value) in mas) res += (key to value.sum() / value.size)
+    for ((key, value) in mas) res[key] = value.sum() / value.size
     return res
 }
 
@@ -258,7 +251,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val word1 = word.toLowerCase().toSet().toMutableSet()
+    val word1 = word.toLowerCase().toSet()
     val charsSmall = chars.joinToString(separator = "").toLowerCase().toSet().toMutableSet()
     for (j in word1) if (j !in charsSmall) return false
     return true
@@ -279,16 +272,11 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val res = mutableMapOf<String, Int>()
     for (element in list) {
-        val a = res[element]
-        if (a == null) {
-            res[element] = 1
-        } else {
-            res[element] = a + 1
-        }
+        res[element] = 1 + (res[element] ?: 0)
     }
     val res1 = mutableMapOf<String, Int>()
     for ((key, value) in res) {
-        if (value != 1) res1 += (key to value)
+        if (value != 1) res1[key] = value
     }
     return res1
 }
@@ -366,10 +354,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val aga = mutableMapOf<Int, Int>()
     for (el in list.indices) {
-        val b = list[el]
-        if (b in aga.keys) return Pair(aga[b]!!, el)
+        val b = aga[list[el]]
+        if (b != null) return Pair(b, el)
         else {
-            aga[number - b] = el
+            aga[number - list[el]] = el
         }
     }
     return Pair(-1, -1)
@@ -398,23 +386,9 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val n = treasures.size // количество сокровищ
-
-    val list = mutableListOf<Pair<Int, Int>>() //список пар вес-цена
-    for (pair in treasures.values) {
-        list.add(pair)
-    }
-
-    val treasuresNames = mutableListOf<String>() // список имён сокровищ
-    for (key in treasures.keys) treasuresNames.add(key)
-
-    val mas = mutableListOf<MutableList<Int>>() // таблица
-    repeat(n + 1) {   //добавляем строки
-        mas.add(mutableListOf())
-    }
-
-    for (h in 0..n) repeat(capacity + 1) { //добавляем столбцы
-        mas[h].add(0)
-    }
+    val list = treasures.values.toMutableList() //список пар вес-цена
+    val treasuresNames = treasures.keys.toMutableList() // список имён сокровищ
+    val mas = Array(n + 1) { Array(capacity + 1) { 0 } } //создание таблицы
 
     for (j in 1..n) {
         for (ind in 1..capacity) {

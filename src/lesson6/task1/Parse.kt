@@ -1,6 +1,9 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
+
 package lesson6.task1
+
+import lesson2.task2.daysInMonth
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -74,7 +77,37 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val date = str.split(" ")
+    val reg = Regex("\\d?\\d\\s[а-я]+\\s\\d{4}")
+    if (!str.matches(reg)) return String()
+    val day = date[0].toInt()
+    val list = listOf(
+        "begin",
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    )
+    if (date[1] !in list) {
+        return String()
+    }
+    val month = list.indexOf(date[1])
+    val year = date[2].toInt()
+    return if (day < 1 || day > daysInMonth(month, year)) {
+        String()
+    } else {
+        String.format("%02d.%02d.%d", day, month, year)
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -86,7 +119,36 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val reg = Regex("\\d{2}\\.\\d{2}\\.\\d{4}")
+    if (!reg.matches(digital)) return String()
+    val date = digital.split(".")
+    if (date[1].toInt() !in 1..12) return String()
+    val day = date[0].toInt()
+    val list = listOf(
+        "begin",
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+    )
+    val month = list[date[1].toInt()]
+    val year = date[2].toInt()
+    return if (day < 1 || day > daysInMonth(date[1].toInt(), year)) {
+        String()
+    } else {
+        String.format("%d %s %d", day, month, year)
+    }
+
+}
 
 /**
  * Средняя (4 балла)
@@ -114,7 +176,19 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int? {
+    val check = Regex("[%\\-]")
+    val res = jumps.split(" ")
+    val nums = mutableListOf<Int>()
+    for (element in res) {
+        try {
+            if (element.toInt() > 0) nums.add(element.toInt()) else return -1
+        } catch (e: Exception) {
+            if (element.contains(check)) continue else return -1
+        }
+    }
+    return if (nums.size == 0) -1 else nums.maxOrNull()
+}
 
 /**
  * Сложная (6 баллов)
@@ -127,7 +201,24 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int? {
+    val check = Regex("[-+%]")
+    val res = jumps.split(" ")
+    val nums = mutableListOf<Int>()
+    for (element in res) {
+        try {
+            if (element.toInt() > 0) nums.add(element.toInt()) else return -1
+        } catch (e: Exception) {
+            for (el in element) {
+                if (element.contains(check)) continue else return -1
+            }
+            if (!element.contains("+")) nums.removeLastOrNull()
+            continue
+        }
+    }
+    return if (nums.size == 0) -1 else nums.maxOrNull()
+
+}
 
 /**
  * Сложная (6 баллов)
@@ -138,7 +229,25 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val check = Regex("[-+]")
+    val res = mutableListOf<Int>()
+    val string = expression.split(" ")
+    if (string[0].contains(check)) throw IllegalArgumentException()
+    try {
+        res.add(string[0].toInt())
+    } catch (e: Exception){
+        throw IllegalArgumentException()
+    }
+    for (ind in 1..string.size - 2 step 2) {
+        if (string[ind + 1].contains(check)) throw IllegalArgumentException()
+        when (string[ind]) {
+            "+" -> res.add(string[ind + 1].toInt())
+            else -> res.add(-string[ind + 1].toInt())
+        }
+    }
+    return res.sum()
+}
 
 /**
  * Сложная (6 баллов)

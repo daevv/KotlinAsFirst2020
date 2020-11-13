@@ -79,7 +79,7 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val date = str.split(" ")
-    val reg = Regex("\\d?\\d\\s[а-я]+\\s\\d{4}")
+    val reg = Regex("\\d?\\d\\s[а-я]+\\s\\d+")
     if (!str.matches(reg)) return String()
     val day = date[0].toInt()
     val list = listOf(
@@ -120,7 +120,7 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    val reg = Regex("\\d{2}\\.\\d{2}\\.\\d{4}")
+    val reg = Regex("\\d{2}\\.\\d{2}\\.\\d+")
     if (!reg.matches(digital)) return String()
     val date = digital.split(".")
     if (date[1].toInt() !in 1..12) return String()
@@ -236,7 +236,7 @@ fun plusMinus(expression: String): Int {
     if (string[0].contains(check)) throw IllegalArgumentException()
     try {
         res.add(string[0].toInt())
-    } catch (e: Exception){
+    } catch (e: Exception) {
         throw IllegalArgumentException()
     }
     for (ind in 1..string.size - 2 step 2) {

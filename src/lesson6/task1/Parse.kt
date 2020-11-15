@@ -78,12 +78,12 @@ fun main() {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    val date = str.split(" ")
     val reg = Regex("\\d?\\d\\s[а-я]+\\s\\d+")
-    if (!str.matches(reg)) return String()
+    if (!str.matches(reg)) return ""
+    val date = str.split(" ")
     val day = date[0].toInt()
     val list = listOf(
-        "begin",
+        "",
         "января",
         "февраля",
         "марта",
@@ -97,13 +97,11 @@ fun dateStrToDigit(str: String): String {
         "ноября",
         "декабря"
     )
-    if (date[1] !in list) {
-        return String()
-    }
+    if (list.indexOf(date[1]) == -1) return ""
     val month = list.indexOf(date[1])
     val year = date[2].toInt()
-    return if (day < 1 || day > daysInMonth(month, year)) {
-        String()
+    return if (day !in 1..daysInMonth(month, year)) {
+        ""
     } else {
         String.format("%02d.%02d.%d", day, month, year)
     }
@@ -121,12 +119,12 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val reg = Regex("\\d{2}\\.\\d{2}\\.\\d+")
-    if (!reg.matches(digital)) return String()
+    if (!reg.matches(digital)) return ""
     val date = digital.split(".")
-    if (date[1].toInt() !in 1..12) return String()
+    if (date[1].toInt() !in 1..12) return ""
     val day = date[0].toInt()
     val list = listOf(
-        "begin",
+        "",
         "января",
         "февраля",
         "марта",
@@ -142,8 +140,8 @@ fun dateDigitToStr(digital: String): String {
     )
     val month = list[date[1].toInt()]
     val year = date[2].toInt()
-    return if (day < 1 || day > daysInMonth(date[1].toInt(), year)) {
-        String()
+    return if (day !in 1..daysInMonth(date[1].toInt(), year)) {
+        ""
     } else {
         String.format("%d %s %d", day, month, year)
     }

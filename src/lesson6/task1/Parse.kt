@@ -4,6 +4,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import kotlin.math.floor
 
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
@@ -284,6 +285,15 @@ fun mostExpensive(description: String): String = TODO()
  */
 fun fromRoman(roman: String): Int = TODO()
 
+fun brackets(command: String): Boolean {
+    var sum = 0
+    for (el in command) {
+        if (el == '[') sum++
+        if (el == ']') if (sum == 0) return false else sum--
+    }
+    return sum == 0
+}
+
 /**
  * Очень сложная (7 баллов)
  *
@@ -320,4 +330,78 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val reg = Regex("[^]\\[\\-+<>\\s]")
+    if (commands.contains(reg) || !brackets(commands)) {
+        throw IllegalArgumentException()
+    }
+    var lim = limit
+    var ind = floor(cells / 2.0).toInt()
+    val res = Array(cells) { 0 }
+    var j = 0
+    while (j <= commands.length - 1) {
+        if (lim == 0) break
+        lim -= 1
+        when (commands[j]) {
+            '+' -> {
+                res[ind]++
+                j++
+            }
+            '-' -> {
+                res[ind]--
+                j++
+            }
+            '>' -> {
+                ind++
+                if (ind > res.size - 1) throw IllegalStateException()
+                j++
+            }
+            '<' -> {
+                ind--
+                if (ind < 0) throw IllegalStateException()
+                j++
+            }
+            '[' -> if (res[ind] != 0) {
+                j++
+                continue
+            } else {
+                var j1 = j
+                var openBrackets = 0
+                while (true) {
+                    j1++
+                    if (commands[j1] == '[') openBrackets++
+                    if (commands[j1] == ']') {
+                        if (openBrackets != 0) {
+                            openBrackets--
+                        } else break
+                    }
+                }
+                j = j1
+                j++
+
+            }
+            ']' -> if (res[ind] == 0) {
+                j++
+                continue
+            } else {
+                var j1 = j
+                var openBrackets = 0
+                while (true) {
+                    j1--
+                    if (commands[j1] == ']') openBrackets++
+                    if (commands[j1] == '[') {
+                        if (openBrackets != 0) {
+                            openBrackets--
+                        } else break
+                    }
+                }
+                j = j1
+                j++
+
+            }
+            ' ' -> j++
+        }
+
+    }
+    return res.toList()
+}

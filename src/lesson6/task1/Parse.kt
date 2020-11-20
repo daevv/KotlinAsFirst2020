@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
+@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence", "TYPE_INFERENCE_ONLY_INPUT_TYPES_WARNING")
 
 
 package lesson6.task1
@@ -97,8 +97,8 @@ fun dateStrToDigit(str: String): String {
         "ноября",
         "декабря"
     )
-    if (list.indexOf(date[1]) == -1) return ""
     val month = list.indexOf(date[1])
+    if (month == -1) return ""
     val year = date[2].toInt()
     return if (day !in 1..daysInMonth(month, year)) {
         ""
@@ -121,7 +121,8 @@ fun dateDigitToStr(digital: String): String {
     val reg = Regex("\\d{2}\\.\\d{2}\\.\\d+")
     if (!reg.matches(digital)) return ""
     val date = digital.split(".")
-    if (date[1].toInt() !in 1..12) return ""
+    val monthInd = date[1].toInt()
+    if (monthInd !in 1..12) return ""
     val day = date[0].toInt()
     val list = listOf(
         "",
@@ -138,9 +139,9 @@ fun dateDigitToStr(digital: String): String {
         "ноября",
         "декабря"
     )
-    val month = list[date[1].toInt()]
+    val month = list[monthInd]
     val year = date[2].toInt()
-    return if (day !in 1..daysInMonth(date[1].toInt(), year)) {
+    return if (day !in 1..daysInMonth(monthInd, year)) {
         ""
     } else {
         String.format("%d %s %d", day, month, year)
@@ -177,15 +178,19 @@ fun flattenPhoneNumber(phone: String): String = TODO()
 fun bestLongJump(jumps: String): Int? {
     val check = Regex("[%\\-]")
     val res = jumps.split(" ")
-    val nums = mutableListOf<Int>()
+    var max = -1
     for (element in res) {
-        try {
-            if (element.toInt() > 0) nums.add(element.toInt()) else return -1
-        } catch (e: Exception) {
-            if (element.contains(check)) continue else return -1
+        val el = element.toIntOrNull()
+        if (el != null) {
+            if (el < 0) return -1
+            max = maxOf(max, el)
+        } else if (element.contains(check)) {
+            continue
+        } else {
+            return -1
         }
     }
-    return if (nums.size == 0) -1 else nums.maxOrNull()
+    return max
 }
 
 /**
@@ -200,22 +205,19 @@ fun bestLongJump(jumps: String): Int? {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int? {
-    val check = Regex("[-+%]")
+    val check = Regex("[^\\-+%]")
     val res = jumps.split(" ")
-    val nums = mutableListOf<Int>()
-    for (element in res) {
-        try {
-            if (element.toInt() > 0) nums.add(element.toInt()) else return -1
-        } catch (e: Exception) {
-            for (el in element) {
-                if (element.contains(check)) continue else return -1
-            }
-            if (!element.contains("+")) nums.removeLastOrNull()
-            continue
+    var max = -1
+    for (ind in res.indices step 2) {
+        val num = res[ind].toIntOrNull()
+        if (num == null || num < 0) return -1
+        val attempt = res[ind + 1]
+        if (attempt.contains(check)) {
+            return -1
         }
+        if (attempt.contains("+")) max = maxOf(max, num)
     }
-    return if (nums.size == 0) -1 else nums.maxOrNull()
-
+    return max
 }
 
 /**
@@ -229,19 +231,17 @@ fun bestHighJump(jumps: String): Int? {
  */
 fun plusMinus(expression: String): Int {
     val check = Regex("[-+]")
-    val res = mutableListOf<Int>()
     val string = expression.split(" ")
     if (string[0].contains(check)) throw IllegalArgumentException()
-    try {
-        res.add(string[0].toInt())
-    } catch (e: Exception) {
-        throw IllegalArgumentException()
-    }
+    val first = string[0].toIntOrNull() ?: throw IllegalArgumentException()
+    val res = mutableListOf(first)
     for (ind in 1..string.size - 2 step 2) {
-        if (string[ind + 1].contains(check)) throw IllegalArgumentException()
+        val num = string[ind + 1]
+        if (num.contains(check) || num.toIntOrNull() == null) throw IllegalArgumentException()
         when (string[ind]) {
-            "+" -> res.add(string[ind + 1].toInt())
-            else -> res.add(-string[ind + 1].toInt())
+            "+" -> res.add(num.toInt())
+            "-" -> res.add(-num.toInt())
+            else -> throw IllegalArgumentException()
         }
     }
     return res.sum()

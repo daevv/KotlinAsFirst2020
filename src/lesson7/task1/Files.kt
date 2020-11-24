@@ -90,6 +90,8 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     File(inputName).forEachLine { line ->
         if (line.isNotEmpty()) {
             string += line.toLowerCase()
+        } else {
+            string += ' '
         }
     }
     for (el in substrings) {

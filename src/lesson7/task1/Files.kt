@@ -86,27 +86,20 @@ fun deleteMarked(inputName: String, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val res = mutableMapOf<String, Int>()
-    var string = String()
-    File(inputName).forEachLine { line ->
-        if (line.isNotEmpty()) {
-            string += line.toLowerCase()
-        } else {
-            string += ' '
-        }
-    }
+    val reg = Regex("(\\r*\\n*)")
+    val text = File(inputName).readText().replace(reg, " ")
     for (el in substrings) {
+        var text1 = text
         val word = el.toLowerCase().trim()
-        if (!string.contains(word)) {
+        if (!text1.contains(word)) {
             res[el] = 0
             continue
         } else {
             var count = 0
-
-            var workString = string
-            while (workString.contains(word)) {
+            while (text1.contains(word)) {
                 count++
-                val point = workString.indexOf(word) + 1
-                workString = workString.substring(point)
+                val point = text1.indexOf(word) + 1
+                text1 = text1.substring(point)
             }
             res[el] = count
         }
@@ -177,7 +170,23 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    var maxLength = -1
+    val text = mutableListOf<String>()
+    File(inputName).forEachLine { line ->
+        val line1 = line.trim()
+        text.add(line1)
+        if (line1.isNotEmpty()) {
+            if (line1.length > maxLength) {
+                maxLength = line1.length
+            }
+        }
+    }
+    for (line in text) {
+        writer.write(" ".repeat((maxLength - line.length) / 2) + line)
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**

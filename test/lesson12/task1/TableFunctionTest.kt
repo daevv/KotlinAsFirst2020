@@ -1,9 +1,8 @@
 package lesson12.task1
 
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 
 internal class TableFunctionTest {
 
@@ -15,6 +14,7 @@ internal class TableFunctionTest {
         function.add(3.0, 4.0)
         assertTrue(function.add(5.0, 6.0))
         assertFalse(function.add(5.0, 7.0))
+        assertTrue(function.getValue(5.0) == 7.0)
         assertEquals(3, function.size)
     }
 
@@ -54,13 +54,16 @@ internal class TableFunctionTest {
     @Tag("10")
     fun getValue() {
         val function = TableFunction()
+        /*
         try {
             function.getValue(0.0)
-        } catch (ex: IllegalArgumentException) {
+        } catch (ex: IllegalStateException) {
             // pass
         } catch (ex: NotImplementedError) {
             throw ex
         }
+        */
+        assertThrows(IllegalStateException::class.java) { function.getValue(0.0) }
         function.add(1.0, 2.0)
         assertEquals(2.0, function.getValue(1.5))
         function.add(3.0, 4.0)
@@ -79,5 +82,18 @@ internal class TableFunctionTest {
         f2.add(3.0, 4.0)
         f2.add(1.0, 2.0)
         assertEquals(f1, f2)
+    }
+
+    @Test
+
+    fun testHashCode() {
+        val f1 = TableFunction()
+        f1.add(1.0, 2.0)
+        f1.add(3.0, 4.0)
+        val f2 = TableFunction()
+        f2.add(3.0, 4.0)
+        f2.add(1.0, 2.0)
+
+        assertTrue(f1.hashCode() == f2.hashCode())
     }
 }

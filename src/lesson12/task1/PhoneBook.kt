@@ -34,9 +34,8 @@ class PhoneBook {
         if (!name.matches(reg)) throw IllegalArgumentException()
         if (book[name] != null) {
             return false
-        } else {
-            book[name] = mutableSetOf()
         }
+        book[name] = mutableSetOf()
         return true
     }
 
@@ -51,9 +50,8 @@ class PhoneBook {
         if (!name.matches(reg)) throw IllegalArgumentException()
         if (book[name] == null) {
             return false
-        } else {
-            book.remove(name)
         }
+        book.remove(name)
         return true
     }
 
@@ -68,12 +66,13 @@ class PhoneBook {
         val regNums = Regex("[0-9+*#-]+")
         val regNames = Regex("[a-zA-Zа-яА-Я]+\\s[a-zA-Zа-яА-Я]+")
         if (!phone.matches(regNums) || !name.matches(regNames)) throw IllegalArgumentException()
-        if (book[name] == null || phone in nums) {
+        val page = book[name]
+        if (page == null || phone in nums) {
             return false
-        } else {
-            book[name]!!.add(phone)
-            nums.add(phone)
         }
+
+        page.add(phone)
+        nums.add(phone)
         return true
     }
 
@@ -87,11 +86,12 @@ class PhoneBook {
         val regNums = Regex("[0-9+*#-]+")
         val regNames = Regex("[a-zA-Zа-яА-Я]+\\s[a-zA-Zа-яА-Я]+")
         if (!phone.matches(regNums) || !name.matches(regNames)) throw IllegalArgumentException()
-        if (book[name] == null || phone !in book[name]!!) {
+        val page = book[name]
+        if (page == null || phone !in page) {
             return false
-        } else {
-            book[name]!!.remove(phone)
         }
+        page.remove(phone)
+        nums.remove(phone)
         return true
     }
 
@@ -113,8 +113,8 @@ class PhoneBook {
         val regNums = Regex("[0-9+*#-]+")
         if (!phone.matches(regNums)) throw IllegalArgumentException()
         if (phone !in nums) return null
-        for (key in book.keys) {
-            if (phone in book[key]!!) return key
+        for ((key, value) in book) {
+            if (phone in value) return key
         }
         return null
     }
@@ -126,15 +126,7 @@ class PhoneBook {
      */
     override fun equals(other: Any?): Boolean {
         if (other is PhoneBook) {
-            if (other.nums != nums) {
-                return false
-            } else {
-                for (key in other.book.keys) {
-                    if (book[key] == other.book[key]) continue
-                    return false
-                }
-                return true
-            }
+            return book == other.book || nums == other.nums
         }
         return false
     }

@@ -21,7 +21,6 @@ class PhoneBook {
 
     private val book = mutableMapOf<String, MutableSet<String>>()
 
-    private val nums = mutableSetOf<String>()
 
     /**
      * Добавить человека.
@@ -67,12 +66,16 @@ class PhoneBook {
         val regNames = Regex("[a-zA-Zа-яА-Я]+\\s[a-zA-Zа-яА-Я]+")
         if (!phone.matches(regNums) || !name.matches(regNames)) throw IllegalArgumentException()
         val page = book[name]
-        if (page == null || phone in nums) {
-            return false
-        }
 
+        when (page) {
+            null -> return false
+            else -> for (list in book.values) {
+                if (phone in list) {
+                    return false
+                }
+            }
+        }
         page.add(phone)
-        nums.add(phone)
         return true
     }
 
@@ -91,7 +94,6 @@ class PhoneBook {
             return false
         }
         page.remove(phone)
-        nums.remove(phone)
         return true
     }
 
@@ -112,7 +114,6 @@ class PhoneBook {
     fun humanByPhone(phone: String): String? {
         val regNums = Regex("[0-9+*#-]+")
         if (!phone.matches(regNums)) throw IllegalArgumentException()
-        if (phone !in nums) return null
         for ((key, value) in book) {
             if (phone in value) return key
         }
@@ -126,14 +127,14 @@ class PhoneBook {
      */
     override fun equals(other: Any?): Boolean {
         if (other is PhoneBook) {
-            return book == other.book || nums == other.nums
+            return book == other.book
         }
         return false
     }
 
     override fun hashCode(): Int {
-        var result = book.hashCode()
-        result = 31 * result + nums.hashCode()
-        return result
+        return book.hashCode()
     }
+
+
 }

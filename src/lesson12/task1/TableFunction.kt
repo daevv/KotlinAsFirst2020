@@ -17,9 +17,8 @@ import kotlin.math.abs
  */
 class TableFunction {
 
-    private val table = mutableMapOf<Double, Double>()
+    private val table = mutableMapOf<Double, Double>().toSortedMap()
 
-    private val arguments = mutableSetOf<Double>()
 
     /**
      * Количество пар в таблице
@@ -34,7 +33,6 @@ class TableFunction {
     fun add(x: Double, y: Double): Boolean {
         val res = x !in table.keys
         table[x] = y
-        arguments.add(x)
         return res
     }
 
@@ -45,7 +43,6 @@ class TableFunction {
     fun remove(x: Double): Boolean {
         if (x !in table.keys) return false
         table.remove(x)
-        arguments.remove(x)
         return true
     }
 
@@ -67,14 +64,25 @@ class TableFunction {
      */
     fun findPair(x: Double): Pair<Double, Double>? {
         if (table.isEmpty()) throw IllegalStateException()
-        var min = Double.MAX_VALUE
-        for (el in table.keys) {
-            if (abs(x - el) < min) {
-                min = el
+        val res: Double
+        val low = table.headMap(x)
+        val high = table.tailMap(x)
+        res = when {
+            high.isEmpty() -> low.lastKey()
+            low.isEmpty() -> high.firstKey()
+            else -> {
+                val reallyLow = low.lastKey()
+                val reallyHigh = high.firstKey()
+                if (abs(x - reallyHigh) < abs(x - reallyLow)) {
+                    reallyHigh
+                } else {
+                    reallyLow
+                }
             }
         }
-        return Pair(min, table[min]!!)
+        return Pair(res, table[res]!!)
     }
+
 
     /**
      * Вернуть значение y по заданному x.
@@ -82,18 +90,43 @@ class TableFunction {
      * Если в таблице есть всего одна пара, взять значение y из неё.
      * Если таблица пуста, бросить IllegalStateException.
      * Если существуют две пары, такие, что x1 < x < x2, использовать интерполяцию.
-     * Если их нет, но существуют две пары, такие, что x1 < x2 < x или x > x2 > x1, использовать экстраполяцию.
+     * Если их нет, но существуют две пары, такие, что x1 < x2 < x или x < x1 < x2, использовать экстраполяцию.
      */
     fun getValue(x: Double): Double {
-        if (table.isEmpty()) throw IllegalStateException()
-        if (table[x] != null) return table[x]!!
-        if (table.size == 1) return table[arguments.first()]!!
+        when {
 
-        val x1 = arguments.maxOrNull()!!
-        arguments.remove(x1)
-        val x2 = arguments.maxOrNull()!!
-        arguments.add(x1)
-        return table[x1]!! + (x - x1) / (x2 - x1) * (table[x2]!! - table[x1]!!)
+            table.isEmpty() -> throw IllegalStateException()
+            table[x] != null -> return table[x]!!
+            table.size == 1 -> return table[table.keys.first()]!!
+
+            else -> {
+
+                val low = table.headMap(x)
+                val high = table.tailMap(x)
+                val x1: Double
+                var x2 = 0.0
+                when {
+                    low.isEmpty() -> {
+                        x1 = high.firstKey()
+                        for (el in high.keys) {
+                            if (el > x1) {
+                                x2 = el
+                                break
+                            }
+                        }
+                    }
+                    high.isEmpty() -> {
+                        x1 = low.lastKey()
+                        x2 = low.headMap(x1).lastKey()
+                    }
+                    else -> {
+                        x1 = low.lastKey()
+                        x2 = high.firstKey()
+                    }
+                }
+                return table[x1]!! + (x - x1) / (x2 - x1) * (table[x2]!! - table[x1]!!)
+            }
+        }
     }
 
 
@@ -103,17 +136,12 @@ class TableFunction {
      */
     override fun equals(other: Any?): Boolean {
         if (other is TableFunction) {
-            if (arguments.size != other.arguments.size) return false
-            for (key in table.keys) {
-                if (table[key] != other.table[key]) return false
-            }
+            return getPairs() == other.getPairs()
         }
-        return true
+        return false
     }
 
-    override fun hashCode(): Int {
-        var result = table.hashCode()
-        result = 31 * result + arguments.hashCode()
-        return result
-    }
+    override fun hashCode(): Int = table.hashCode()
+
+
 }

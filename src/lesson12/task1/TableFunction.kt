@@ -97,14 +97,15 @@ class TableFunction {
 
             table.isEmpty() -> throw IllegalStateException()
             table[x] != null -> return table[x]!!
-            table.size == 1 -> return table[table.keys.first()]!!
+            table.size == 1 -> return table.values.first()
 
             else -> {
 
-                val low = table.headMap(x).toSortedMap()
+                val low = table.headMap(x)
                 val high = table.tailMap(x).toSortedMap()
                 val x1: Double
                 val x2: Double
+
                 when {
                     low.isEmpty() -> {
                         x1 = high.firstKey()
@@ -120,7 +121,11 @@ class TableFunction {
                         x2 = high.firstKey()
                     }
                 }
-                return table[x1]!! + (x - x1) / (x2 - x1) * (table[x2]!! - table[x1]!!)
+
+                val y1 = table[x1] ?: 0.0
+                val y2 = table[x2] ?: 0.0
+
+                return y1 + (x - x1) / (x2 - x1) * (y2 - y1)
             }
         }
     }
@@ -132,7 +137,7 @@ class TableFunction {
      */
     override fun equals(other: Any?): Boolean {
         if (other is TableFunction) {
-            return getPairs() == other.getPairs()
+            return table == other.table
         }
         return false
     }

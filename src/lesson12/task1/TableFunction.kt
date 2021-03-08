@@ -102,15 +102,14 @@ class TableFunction {
             else -> {
 
                 val low = table.headMap(x)
-                val high = table.tailMap(x).toSortedMap()
+                val high = table.tailMap(x)
                 val x1: Double
                 val x2: Double
 
                 when {
                     low.isEmpty() -> {
                         x1 = high.firstKey()
-                        high.remove(x1)
-                        x2 = high.firstKey()
+                        x2 = high.keys.take(2).last()
                     }
                     high.isEmpty() -> {
                         x1 = low.lastKey()
